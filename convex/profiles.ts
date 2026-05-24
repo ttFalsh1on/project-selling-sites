@@ -40,6 +40,7 @@ export const getMe = query({
       stats,
       avatarUrl,
       isGuest: profile.isGuest,
+      isAdmin: profile.isAdmin ?? false,
     }
   },
 })
@@ -69,6 +70,7 @@ export const ensureProfile = mutation({
       name: isGuest ? 'Гость SiteForge' : 'Пользователь SiteForge',
       email: user?.email,
       isGuest,
+      isAdmin: false,
     })
   },
 })

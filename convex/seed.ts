@@ -37,6 +37,75 @@ const servicesSeed = [
   },
 ]
 
+const cmsBlocksSeed: Array<{
+  page: string
+  key: string
+  type: 'text' | 'button'
+  value: string
+  meta?: { href?: string }
+  sortOrder: number
+}> = [
+  { page: 'home', key: 'home.hero.tagline', type: 'text', value: 'Сервис по продаже сайтов', sortOrder: 0 },
+  { page: 'home', key: 'home.hero.title', type: 'text', value: 'Создаём сайты,', sortOrder: 1 },
+  { page: 'home', key: 'home.hero.titleHighlight', type: 'text', value: 'которые продают', sortOrder: 2 },
+  {
+    page: 'home',
+    key: 'home.hero.description',
+    type: 'text',
+    value:
+      'SiteForge — студия полного цикла. От лендинга до интернет-магазина: дизайн, разработка, запуск и поддержка.',
+    sortOrder: 3,
+  },
+  {
+    page: 'home',
+    key: 'home.hero.btnServices',
+    type: 'button',
+    value: 'Смотреть услуги',
+    meta: { href: '/services' },
+    sortOrder: 4,
+  },
+  {
+    page: 'home',
+    key: 'home.hero.btnReviews',
+    type: 'button',
+    value: 'Читать отзывы',
+    meta: { href: '/reviews' },
+    sortOrder: 5,
+  },
+  { page: 'home', key: 'home.stat.0.value', type: 'text', value: '150+', sortOrder: 6 },
+  { page: 'home', key: 'home.stat.0.label', type: 'text', value: 'Сайтов запущено', sortOrder: 7 },
+  { page: 'home', key: 'home.stat.1.value', type: 'text', value: '4.9', sortOrder: 8 },
+  { page: 'home', key: 'home.stat.1.label', type: 'text', value: 'Средняя оценка', sortOrder: 9 },
+  { page: 'home', key: 'home.stat.2.value', type: 'text', value: '7 дн.', sortOrder: 10 },
+  { page: 'home', key: 'home.stat.2.label', type: 'text', value: 'Срок лендинга', sortOrder: 11 },
+  { page: 'home', key: 'home.services.title', type: 'text', value: 'Популярные услуги', sortOrder: 12 },
+  {
+    page: 'home',
+    key: 'home.services.link',
+    type: 'button',
+    value: 'Все услуги →',
+    meta: { href: '/services' },
+    sortOrder: 13,
+  },
+  { page: 'home', key: 'home.review.title', type: 'text', value: 'Последний отзыв', sortOrder: 14 },
+  { page: 'services', key: 'services.page.title', type: 'text', value: 'Услуги', sortOrder: 0 },
+  {
+    page: 'services',
+    key: 'services.page.description',
+    type: 'text',
+    value: 'Выберите формат сайта — мы разработаем, запустим и передадим готовый продукт.',
+    sortOrder: 1,
+  },
+  { page: 'reviews', key: 'reviews.page.title', type: 'text', value: 'Отзывы', sortOrder: 0 },
+  {
+    page: 'reviews',
+    key: 'reviews.page.description',
+    type: 'text',
+    value: 'Что говорят клиенты о работе с SiteForge.',
+    sortOrder: 1,
+  },
+]
+
 const reviewsSeed = [
   {
     name: 'Алексей Иванов',
@@ -74,7 +143,7 @@ const reviewsSeed = [
 
 async function insertSeedData(ctx: MutationCtx) {
   const existingServices = await ctx.db.query('services').first()
-  if (existingServices) return { seeded: false }
+  if (existingServices) return { seeded: false, cmsSeeded: false }
 
   for (const service of servicesSeed) {
     await ctx.db.insert('services', service)
@@ -84,12 +153,32 @@ async function insertSeedData(ctx: MutationCtx) {
     await ctx.db.insert('reviews', review)
   }
 
-  return { seeded: true }
+  for (const block of cmsBlocksSeed) {
+    await ctx.db.insert('cmsBlocks', block)
+  }
+
+  return { seeded: true, cmsSeeded: true }
+}
+
+async function insertCmsSeedData(ctx: MutationCtx) {
+  const existingCms = await ctx.db.query('cmsBlocks').first()
+  if (existingCms) return { cmsSeeded: false }
+
+  for (const block of cmsBlocksSeed) {
+    await ctx.db.insert('cmsBlocks', block)
+  }
+
+  return { cmsSeeded: true }
 }
 
 export const seedIfEmpty = mutation({
   args: {},
   handler: async (ctx) => insertSeedData(ctx),
+})
+
+export const seedCmsIfEmpty = mutation({
+  args: {},
+  handler: async (ctx) => insertCmsSeedData(ctx),
 })
 
 export const seed = internalMutation({

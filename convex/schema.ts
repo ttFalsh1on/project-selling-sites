@@ -11,7 +11,20 @@ export default defineSchema({
     email: v.optional(v.string()),
     avatarStorageId: v.optional(v.id('_storage')),
     isGuest: v.boolean(),
+    isAdmin: v.optional(v.boolean()),
   }).index('by_userId', ['userId']),
+
+  cmsBlocks: defineTable({
+    page: v.string(),
+    key: v.string(),
+    type: v.union(v.literal('text'), v.literal('image'), v.literal('button')),
+    value: v.string(),
+    imageStorageId: v.optional(v.id('_storage')),
+    meta: v.optional(v.object({ href: v.optional(v.string()) })),
+    sortOrder: v.number(),
+  })
+    .index('by_page_key', ['page', 'key'])
+    .index('by_page', ['page', 'sortOrder']),
 
   services: defineTable({
     slug: v.string(),
