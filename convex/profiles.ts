@@ -65,6 +65,21 @@ export const ensureProfile = mutation({
       return existing._id
     }
 
+    if (user?.email) {
+      const profiles = await ctx.db.query('userProfiles').collect()
+      const orphaned = profiles.find(
+        (p) => p.email?.toLowerCase() === user.email!.toLowerCase() && p.userId !== userId,
+      )
+      if (orphaned) {
+        await ctx.db.patch(orphaned._id, {
+          userId,
+          isGuest: false,
+          email: user.email,
+        })
+        return orphaned._id
+      }
+    }
+
     return await ctx.db.insert('userProfiles', {
       userId,
       name: isGuest ? 'Гость SiteForge' : 'Пользователь SiteForge',

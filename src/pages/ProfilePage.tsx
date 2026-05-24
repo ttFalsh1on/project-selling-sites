@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { useQuery } from 'convex/react'
 import { useMutation } from 'convex/react'
+import { useAuthActions } from '@convex-dev/auth/react'
 import { api } from '../../convex/_generated/api'
 import { GlassCard } from '../components/GlassCard'
 import { LoadingState } from '../components/LoadingState'
@@ -17,6 +19,8 @@ const statusLabels = {
 export function ProfilePage() {
   const profileData = useQuery(api.profiles.getMe)
   const updateName = useMutation(api.profiles.updateName)
+  const { signOut } = useAuthActions()
+  const [signingOut, setSigningOut] = useState(false)
 
   if (profileData === undefined) {
     return <LoadingState label="Загрузка профиля..." />
@@ -32,6 +36,15 @@ export function ProfilePage() {
     const nextName = window.prompt('Ваше имя', profile.name)
     if (!nextName?.trim()) return
     await updateName({ name: nextName.trim() })
+  }
+
+  const handleSignOut = async () => {
+    setSigningOut(true)
+    try {
+      await signOut()
+    } finally {
+      setSigningOut(false)
+    }
   }
 
   return (
@@ -72,6 +85,16 @@ export function ProfilePage() {
           {!isGuest && (
             <button type="button" onClick={() => void handleEditName()} className="btn-secondary w-full">
               Редактировать имя
+            </button>
+          )}
+          {!isGuest && (
+            <button
+              type="button"
+              onClick={() => void handleSignOut()}
+              disabled={signingOut}
+              className="btn-secondary w-full text-red-300 hover:text-red-200"
+            >
+              {signingOut ? 'Выход...' : 'Выйти'}
             </button>
           )}
         </div>

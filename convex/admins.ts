@@ -23,9 +23,21 @@ export const promoteToAdmin = mutation({
       throw new Error('Только администратор может назначать других админов')
     }
 
+    const normalizedEmail = email.trim().toLowerCase()
+
+    const profiles = await ctx.db.query('userProfiles').collect()
+    const profileByEmail = profiles.find((p) => p.email?.toLowerCase() === normalizedEmail)
+
+    if (profileByEmail) {
+      await ctx.db.patch(profileByEmail._id, { isAdmin: true, isGuest: false })
+      return { success: true, userId: profileByEmail.userId }
+    }
+
     const users = await ctx.db.query('users').collect()
-    const targetUser = users.find((u) => u.email?.toLowerCase() === email.trim().toLowerCase())
-    if (!targetUser) throw new Error('Пользователь с таким email не найден. Сначала зарегистрируйтесь на сайте.')
+    const targetUser = users.find((u) => u.email?.toLowerCase() === normalizedEmail)
+    if (!targetUser) {
+      throw new Error('Пользователь с таким email не найден. Сначала зарегистрируйтесь на сайте.')
+    }
 
     const profile = await ctx.db
       .query('userProfiles')
