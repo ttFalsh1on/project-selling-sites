@@ -1,3 +1,85 @@
+export const THEME_COLOR_KEYS = {
+  cyberBg: '--color-cyber-bg',
+  cyberCyan: '--color-cyber-cyan',
+  cyberMagenta: '--color-cyber-magenta',
+  cyberGreen: '--color-cyber-green',
+  cyberPurple: '--color-cyber-purple',
+  accentPurple: '--color-accent-purple',
+  accentPurpleHover: '--color-accent-purple-hover',
+  accentTeal: '--color-accent-teal',
+  glassBg: '--color-glass-bg',
+  glassBorder: '--color-glass-border',
+  glassHover: '--color-glass-hover',
+  sidebar: '--color-sidebar',
+  sidebarHover: '--color-sidebar-hover',
+  sidebarActive: '--color-sidebar-active',
+} as const
+
+export type ThemeColorKey = keyof typeof THEME_COLOR_KEYS
+
+export const THEME_COLOR_LABELS: Record<ThemeColorKey, string> = {
+  cyberBg: 'Фон сайта',
+  cyberCyan: 'Неон cyan',
+  cyberMagenta: 'Неон magenta',
+  cyberGreen: 'Неон green',
+  cyberPurple: 'Фиолетовый фон',
+  accentPurple: 'Кнопки (фиолетовый)',
+  accentPurpleHover: 'Кнопки при наведении',
+  accentTeal: 'Акцент teal',
+  glassBg: 'Стекло (фон)',
+  glassBorder: 'Стекло (рамка)',
+  glassHover: 'Стекло (hover)',
+  sidebar: 'Сайдбар',
+  sidebarHover: 'Сайдбар hover',
+  sidebarActive: 'Сайдбар active',
+}
+
+export const DEFAULT_THEME_COLORS: Record<ThemeColorKey, string> = {
+  cyberBg: '#0a0a0a',
+  cyberCyan: '#00ffff',
+  cyberMagenta: '#ff00ff',
+  cyberGreen: '#39ff14',
+  cyberPurple: '#1a0033',
+  accentPurple: '#bb86fc',
+  accentPurpleHover: '#cfa9ff',
+  accentTeal: '#03dac6',
+  glassBg: 'rgba(255, 255, 255, 0.12)',
+  glassBorder: 'rgba(255, 255, 255, 0.2)',
+  glassHover: 'rgba(255, 255, 255, 0.18)',
+  sidebar: '#1a1a2e',
+  sidebarHover: '#252547',
+  sidebarActive: '#4361ee',
+}
+
+export type CmsSlotId =
+  | 'page-end'
+  | 'hero-after'
+  | 'stats-after'
+  | 'services-after'
+  | 'review-after'
+  | 'header-after'
+  | 'list-after'
+
+export const CMS_SLOTS: Record<string, { id: CmsSlotId; label: string }[]> = {
+  home: [
+    { id: 'hero-after', label: 'После главного баннера' },
+    { id: 'stats-after', label: 'После статистики' },
+    { id: 'services-after', label: 'После услуг' },
+    { id: 'review-after', label: 'После отзыва' },
+    { id: 'page-end', label: 'В конце страницы' },
+  ],
+  services: [
+    { id: 'header-after', label: 'После заголовка' },
+    { id: 'list-after', label: 'После списка услуг' },
+    { id: 'page-end', label: 'В конце страницы' },
+  ],
+  reviews: [
+    { id: 'header-after', label: 'После заголовка' },
+    { id: 'list-after', label: 'После списка отзывов' },
+    { id: 'page-end', label: 'В конце страницы' },
+  ],
+}
+
 export type CmsPage = 'home' | 'services' | 'reviews'
 
 export const CMS_DEFAULTS: Record<

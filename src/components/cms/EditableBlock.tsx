@@ -1,11 +1,13 @@
 import { useState, type MouseEvent, type ReactNode } from 'react'
 import { useMutation } from 'convex/react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { api } from '../../../convex/_generated/api'
 import type { CmsPage } from '../../data/cmsDefaults'
+import { useCmsAwarePath } from '../../hooks/useCmsAwarePath'
 import { useCmsMode } from './CmsProvider'
 import { CmsActionMenu } from './CmsActionMenu'
 import { CmsEditModal } from './CmsEditModal'
+import { CmsLink } from './CmsLink'
 
 interface EditableBlockProps {
   page: CmsPage
@@ -29,6 +31,8 @@ export function EditableBlock({
   children,
 }: EditableBlockProps) {
   const isCmsMode = useCmsMode()
+  const cmsPath = useCmsAwarePath()
+  const navigate = useNavigate()
   const remove = useMutation(api.cms.remove)
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null)
   const [editing, setEditing] = useState(false)
@@ -47,12 +51,14 @@ export function EditableBlock({
     }
   }
 
+  const linkHref = cmsPath(href)
+
   const content =
     children ??
     (type === 'button' ? (
-      <Link to={href} className={isCmsMode ? 'pointer-events-none' : undefined}>
+      <CmsLink to={href} className={isCmsMode ? 'pointer-events-none' : undefined}>
         {value}
-      </Link>
+      </CmsLink>
     ) : (
       value
     ))
@@ -60,9 +66,9 @@ export function EditableBlock({
   if (!isCmsMode) {
     if (type === 'button') {
       return (
-        <Link to={href} className={className}>
+        <CmsLink to={href} className={className}>
           {value}
-        </Link>
+        </CmsLink>
       )
     }
     return <Tag className={className}>{content}</Tag>
@@ -84,6 +90,14 @@ export function EditableBlock({
         <CmsActionMenu
           x={menu.x}
           y={menu.y}
+          onOpen={
+            type === 'button'
+              ? () => {
+                  setMenu(null)
+                  navigate(linkHref)
+                }
+              : undefined
+          }
           onEdit={() => {
             setMenu(null)
             setEditing(true)

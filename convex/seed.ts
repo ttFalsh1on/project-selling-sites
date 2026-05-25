@@ -141,6 +141,12 @@ const reviewsSeed = [
   },
 ]
 
+const navItemsSeed = [
+  { path: '/', label: 'Главная', icon: '🏠', sortOrder: 0 },
+  { path: '/services', label: 'Услуги', icon: '⚡', sortOrder: 1 },
+  { path: '/reviews', label: 'Отзывы', icon: '💬', sortOrder: 2 },
+]
+
 async function insertSeedData(ctx: MutationCtx) {
   const existingServices = await ctx.db.query('services').first()
   if (existingServices) return { seeded: false, cmsSeeded: false }
@@ -157,7 +163,22 @@ async function insertSeedData(ctx: MutationCtx) {
     await ctx.db.insert('cmsBlocks', block)
   }
 
+  for (const item of navItemsSeed) {
+    await ctx.db.insert('navItems', item)
+  }
+
   return { seeded: true, cmsSeeded: true }
+}
+
+async function insertNavSeedData(ctx: MutationCtx) {
+  const existingNav = await ctx.db.query('navItems').first()
+  if (existingNav) return { navSeeded: false }
+
+  for (const item of navItemsSeed) {
+    await ctx.db.insert('navItems', item)
+  }
+
+  return { navSeeded: true }
 }
 
 async function insertCmsSeedData(ctx: MutationCtx) {
@@ -179,6 +200,11 @@ export const seedIfEmpty = mutation({
 export const seedCmsIfEmpty = mutation({
   args: {},
   handler: async (ctx) => insertCmsSeedData(ctx),
+})
+
+export const seedNavIfEmpty = mutation({
+  args: {},
+  handler: async (ctx) => insertNavSeedData(ctx),
 })
 
 export const seed = internalMutation({

@@ -3,15 +3,18 @@ import { useQuery } from 'convex/react'
 import { motion } from 'framer-motion'
 import { api } from '../../convex/_generated/api'
 import { profilePath } from '../data/navigation'
+import { useCmsAwarePath } from '../hooks/useCmsAwarePath'
 import { UserAvatar } from './UserAvatar'
 
 export function ProfileAvatarLink() {
   const profileData = useQuery(api.profiles.getMe)
+  const cmsPath = useCmsAwarePath()
   const name = profileData?.profile.name ?? 'Гость'
+  const isGuest = profileData?.isGuest ?? true
 
   return (
     <NavLink
-      to={profilePath}
+      to={cmsPath(profilePath)}
       aria-label="Профиль"
       title="Профиль"
       className={({ isActive }) =>
@@ -33,8 +36,10 @@ export function ProfileAvatarLink() {
           {isActive && (
             <motion.span
               layoutId="profile-active-ring"
-              className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-[#0a0a0a] bg-cyber-green"
-              style={{ boxShadow: '0 0 8px #39ff14' }}
+              className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-[#0a0a0a] ${
+                isGuest ? 'bg-cyan-400' : 'bg-cyber-green'
+              }`}
+              style={{ boxShadow: isGuest ? '0 0 8px #00ffff' : '0 0 8px #39ff14' }}
             />
           )}
         </>

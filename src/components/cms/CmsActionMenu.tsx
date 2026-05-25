@@ -6,9 +6,10 @@ interface CmsActionMenuProps {
   onEdit: () => void
   onDelete: () => void
   onClose: () => void
+  onOpen?: () => void
 }
 
-export function CmsActionMenu({ x, y, onEdit, onDelete, onClose }: CmsActionMenuProps) {
+export function CmsActionMenu({ x, y, onEdit, onDelete, onClose, onOpen }: CmsActionMenuProps) {
   return (
     <>
       <div className="fixed inset-0 z-[350]" onClick={onClose} aria-hidden="true" />
@@ -16,8 +17,17 @@ export function CmsActionMenu({ x, y, onEdit, onDelete, onClose }: CmsActionMenu
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="glass-panel fixed z-[360] min-w-[160px] overflow-hidden rounded-xl p-1 shadow-[0_0_24px_rgba(0,255,255,0.2)]"
-        style={{ left: Math.min(x, window.innerWidth - 180), top: Math.min(y, window.innerHeight - 120) }}
+        style={{ left: Math.min(x, window.innerWidth - 180), top: Math.min(y, window.innerHeight - 160) }}
       >
+        {onOpen && (
+          <button
+            type="button"
+            onClick={onOpen}
+            className="block w-full rounded-lg px-4 py-2.5 text-left text-sm font-semibold text-cyan-300 hover:bg-white/10"
+          >
+            Открыть
+          </button>
+        )}
         <button
           type="button"
           onClick={onEdit}

@@ -13,10 +13,12 @@ import type * as auth from "../auth.js";
 import type * as cms from "../cms.js";
 import type * as http from "../http.js";
 import type * as lib_requireAdmin from "../lib/requireAdmin.js";
+import type * as navItems from "../navItems.js";
 import type * as profiles from "../profiles.js";
 import type * as reviews from "../reviews.js";
 import type * as seed from "../seed.js";
 import type * as services from "../services.js";
+import type * as theme from "../theme.js";
 
 import type {
   ApiFromModules,
@@ -30,10 +32,12 @@ declare const fullApi: ApiFromModules<{
   cms: typeof cms;
   http: typeof http;
   "lib/requireAdmin": typeof lib_requireAdmin;
+  navItems: typeof navItems;
   profiles: typeof profiles;
   reviews: typeof reviews;
   seed: typeof seed;
   services: typeof services;
+  theme: typeof theme;
 }>;
 
 /**

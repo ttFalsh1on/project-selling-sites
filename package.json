@@ -9,6 +9,7 @@
     "dev:backend": "convex dev",
     "seed": "convex run seed:seedIfEmpty",
     "seed:cms": "convex run seed:seedCmsIfEmpty",
+    "seed:nav": "convex run seed:seedNavIfEmpty",
     "seed:prod": "convex run seed:seedIfEmpty --prod",
     "seed:cms:prod": "convex run seed:seedCmsIfEmpty --prod",
     "deploy:backend": "convex deploy",

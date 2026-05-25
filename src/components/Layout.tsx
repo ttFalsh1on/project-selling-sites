@@ -1,8 +1,9 @@
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { NeonBackground } from './NeonBackground'
 import { HamburgerMenu } from './HamburgerMenu'
 import { ProfileAvatarLink } from './ProfileAvatarLink'
+import { CmsLink } from './cms/CmsLink'
 import { pageTitles } from '../data/navigation'
 
 export function Layout() {
@@ -17,12 +18,12 @@ export function Layout() {
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-3 sm:h-16 sm:gap-4 sm:px-5 md:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
             <HamburgerMenu />
-            <Link
+            <CmsLink
               to="/"
               className="neon-logo truncate text-sm no-underline sm:text-base md:text-lg"
             >
               SiteForge
-            </Link>
+            </CmsLink>
           </div>
 
           <h1 className="hidden truncate text-sm font-semibold text-white/55 md:block lg:text-base">
