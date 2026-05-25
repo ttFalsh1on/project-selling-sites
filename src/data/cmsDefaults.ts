@@ -80,7 +80,17 @@ export const CMS_SLOTS: Record<string, { id: CmsSlotId; label: string }[]> = {
   ],
 }
 
-export type CmsPage = 'home' | 'services' | 'reviews'
+export function getCmsSlots(page: string): { id: CmsSlotId; label: string }[] {
+  if (page.startsWith('p.')) {
+    return [
+      { id: 'header-after', label: 'После заголовка' },
+      { id: 'page-end', label: 'В конце страницы' },
+    ]
+  }
+  return CMS_SLOTS[page] ?? CMS_SLOTS.home
+}
+
+export type CmsPage = 'home' | 'services' | 'reviews' | string
 
 export const CMS_DEFAULTS: Record<
   CmsPage,

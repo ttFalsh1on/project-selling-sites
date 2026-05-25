@@ -3,7 +3,7 @@ import { useMutation } from 'convex/react'
 import type { Id } from '../../../convex/_generated/dataModel'
 import { api } from '../../../convex/_generated/api'
 import {
-  CMS_SLOTS,
+  getCmsSlots,
   type CmsSlotId,
 } from '../../data/cmsDefaults'
 import { useCmsPageId } from '../../hooks/useCmsPageId'
@@ -27,7 +27,7 @@ export function CmsAddModal({ onClose }: CmsAddModalProps) {
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
 
-  const slots = CMS_SLOTS[page] ?? CMS_SLOTS.home
+  const slots = getCmsSlots(page)
 
   const uploadFile = async (file: File) => {
     const uploadUrl = await generateUploadUrl()
