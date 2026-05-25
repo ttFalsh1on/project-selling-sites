@@ -8,4 +8,6 @@ if (!convexUrl) {
   )
 }
 
+export { convexUrl }
+
 export const convex = new ConvexReactClient(convexUrl)
