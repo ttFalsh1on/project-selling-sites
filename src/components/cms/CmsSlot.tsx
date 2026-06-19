@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { useMutation } from 'convex/react'
-import { api } from '../../../convex/_generated/api'
+import { useMutation } from '../../hooks/useApi'
+import { api } from '../../api/paths'
+import type { CmsBlockDoc } from '../../types/api'
 import { GlassCard } from '../GlassCard'
 import { CmsActionMenu } from './CmsActionMenu'
 import { CmsEditModal } from './CmsEditModal'
@@ -172,6 +173,17 @@ export function CmsSlot({ slot, blocks }: CmsSlotProps) {
   )
 }
 
-export function useCustomBlocks(blocks: CustomBlock[] | undefined) {
-  return (blocks ?? []).filter((b) => b.key.startsWith('custom.'))
+export function useCustomBlocks(blocks: CmsBlockDoc[] | null | undefined): CustomBlock[] {
+  return (blocks ?? [])
+    .filter((b) => b.key.startsWith('custom.'))
+    .map((b) => ({
+      ...b,
+      type: b.type as CustomBlock['type'],
+      meta: b.meta
+        ? {
+            ...b.meta,
+            align: b.meta.align as CustomBlock['meta'] extends { align?: infer A } ? A : never,
+          }
+        : b.meta,
+    })) as CustomBlock[]
 }

@@ -1,6 +1,7 @@
-import { useQuery } from 'convex/react'
+import { useQuery } from '../hooks/useApi'
 import { motion } from 'framer-motion'
-import { api } from '../../convex/_generated/api'
+import { api } from '../api/paths'
+import type { ReviewDoc, ServiceDoc } from '../types/api'
 import { CmsSlot, useCustomBlocks } from '../components/cms/CmsSlot'
 import { EditableBlock } from '../components/cms/EditableBlock'
 import { EditableReviewCard } from '../components/cms/EditableReviewCard'
@@ -10,12 +11,16 @@ import { LoadingState } from '../components/LoadingState'
 import { useCmsPage } from '../hooks/useCmsPage'
 
 export function HomePage() {
-  const services = useQuery(api.services.list)
-  const reviews = useQuery(api.reviews.list)
+  const services = useQuery<ServiceDoc[]>(api.services.list)
+  const reviews = useQuery<ReviewDoc[]>(api.reviews.list)
   const cms = useCmsPage('home')
   const customBlocks = useCustomBlocks(cms.blocks)
 
   if (services === undefined || reviews === undefined || cms.isLoading) {
+    return <LoadingState />
+  }
+
+  if (!services || !reviews) {
     return <LoadingState />
   }
 

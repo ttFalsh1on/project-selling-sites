@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useMutation } from 'convex/react'
-import type { Doc } from '../../../convex/_generated/dataModel'
-import { api } from '../../../convex/_generated/api'
+import { useMutation } from '../../hooks/useApi'
+import { api } from '../../api/paths'
+import type { ReviewDoc } from '../../types/api'
 import { GlassCard } from '../GlassCard'
 import { EditableEntityWrapper } from './EditableEntityWrapper'
 import { ReviewEditModal } from './ReviewEditModal'
@@ -23,7 +23,7 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 interface EditableReviewCardProps {
-  review: Doc<'reviews'>
+  review: ReviewDoc
   delay?: number
   compact?: boolean
 }

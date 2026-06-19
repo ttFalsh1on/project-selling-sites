@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { useQuery } from 'convex/react'
-import { api } from '../../../convex/_generated/api'
+import { useQuery } from '../../hooks/useApi'
+import { api } from '../../api/paths'
+import type { ProfileMe } from '../../types/api'
 import { CmsToolbar } from './CmsToolbar'
 
 interface CmsContextValue {
@@ -16,7 +17,7 @@ export function useCmsMode() {
 
 export function CmsProvider({ children }: { children: ReactNode }) {
   const [searchParams] = useSearchParams()
-  const me = useQuery(api.profiles.getMe)
+  const me = useQuery<ProfileMe | null>(api.profiles.getMe)
   const cmsParam = searchParams.get('cms') === '1'
   const wasAdminRef = useRef(false)
 

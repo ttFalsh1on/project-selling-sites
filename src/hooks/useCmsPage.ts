@@ -1,14 +1,15 @@
 import { useMemo } from 'react'
-import { useQuery } from 'convex/react'
-import { api } from '../../convex/_generated/api'
+import { useQuery } from './useApi'
+import { api } from '../api/paths'
 import { CMS_DEFAULTS, type CmsPage } from '../data/cmsDefaults'
+import type { CmsBlockDoc } from '../types/api'
 
 function isBuiltinPage(page: CmsPage): page is keyof typeof CMS_DEFAULTS {
   return page === 'home' || page === 'services' || page === 'reviews'
 }
 
 export function useCmsPage(page: CmsPage) {
-  const blocks = useQuery(api.cms.listByPage, { page })
+  const blocks = useQuery<CmsBlockDoc[]>(api.cms.listByPage, { page })
 
   const blockMap = useMemo(() => {
     const map = new Map<string, { value: string; href?: string; type: string }>()

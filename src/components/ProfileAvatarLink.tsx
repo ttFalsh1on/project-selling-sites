@@ -1,13 +1,14 @@
 import { NavLink } from 'react-router-dom'
-import { useQuery } from 'convex/react'
+import { useQuery } from '../hooks/useApi'
 import { motion } from 'framer-motion'
-import { api } from '../../convex/_generated/api'
+import { api } from '../api/paths'
+import type { ProfileMe } from '../types/api'
 import { profilePath } from '../data/navigation'
 import { useCmsAwarePath } from '../hooks/useCmsAwarePath'
 import { UserAvatar } from './UserAvatar'
 
 export function ProfileAvatarLink() {
-  const profileData = useQuery(api.profiles.getMe)
+  const profileData = useQuery<ProfileMe | null>(api.profiles.getMe)
   const cmsPath = useCmsAwarePath()
   const name = profileData?.profile.name ?? 'Гость'
   const isGuest = profileData?.isGuest ?? true

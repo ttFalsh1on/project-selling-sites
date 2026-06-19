@@ -1,12 +1,11 @@
 import { useState } from 'react'
-import { useAuthActions } from '@convex-dev/auth/react'
-import { useMutation } from 'convex/react'
-import { api } from '../../convex/_generated/api'
+import { useMutation } from '../hooks/useApi'
+import { api } from '../api/paths'
+import { useFlexAuth } from '../providers/FlexAuthProvider'
 import { GlassCard } from './GlassCard'
 
 export function CreateAccountForm() {
-  const { signIn } = useAuthActions()
-  const completeRegistration = useMutation(api.profiles.completeRegistration)
+  const { upgradeGuest } = useFlexAuth()
   const ensureProfile = useMutation(api.profiles.ensureProfile)
 
   const [name, setName] = useState('')
@@ -21,14 +20,8 @@ export function CreateAccountForm() {
     setError(null)
 
     try {
-      await signIn('password', {
-        flow: 'signUp',
-        email: email.trim(),
-        password,
-        name: name.trim(),
-      })
-      await ensureProfile()
-      await completeRegistration({ name: name.trim(), email: email.trim() })
+      await upgradeGuest(name.trim(), email.trim(), password)
+      await ensureProfile({})
     } catch {
       setError('Не удалось создать аккаунт. Проверьте email и пароль (мин. 8 символов).')
     } finally {

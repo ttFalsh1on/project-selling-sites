@@ -1,5 +1,6 @@
-import { useQuery } from 'convex/react'
-import { api } from '../../convex/_generated/api'
+import { useQuery } from '../hooks/useApi'
+import { api } from '../api/paths'
+import type { ReviewDoc } from '../types/api'
 import { CmsSlot, useCustomBlocks } from '../components/cms/CmsSlot'
 import { EditableBlock } from '../components/cms/EditableBlock'
 import { EditableReviewCard } from '../components/cms/EditableReviewCard'
@@ -8,12 +9,16 @@ import { LoadingState } from '../components/LoadingState'
 import { useCmsPage } from '../hooks/useCmsPage'
 
 export function ReviewsPage() {
-  const reviews = useQuery(api.reviews.list)
-  const avgRating = useQuery(api.reviews.averageRating)
+  const reviews = useQuery<ReviewDoc[]>(api.reviews.list)
+  const avgRating = useQuery<number>(api.reviews.averageRating)
   const cms = useCmsPage('reviews')
   const customBlocks = useCustomBlocks(cms.blocks)
 
   if (reviews === undefined || avgRating === undefined || cms.isLoading) {
+    return <LoadingState />
+  }
+
+  if (!reviews || avgRating === null) {
     return <LoadingState />
   }
 

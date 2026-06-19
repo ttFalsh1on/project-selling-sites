@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react'
-import { useMutation, useQuery } from 'convex/react'
-import { api } from '../../../convex/_generated/api'
+import { useMutation, useQuery } from '../../hooks/useApi'
+import { api } from '../../api/paths'
 import {
   DEFAULT_THEME_COLORS,
   THEME_COLOR_KEYS,
   THEME_COLOR_LABELS,
   type ThemeColorKey,
 } from '../../data/cmsDefaults'
+import type { ThemeColors } from '../../types/api'
 
 interface CmsThemePanelProps {
   onClose: () => void
 }
 
 export function CmsThemePanel({ onClose }: CmsThemePanelProps) {
-  const stored = useQuery(api.theme.get)
+  const stored = useQuery<ThemeColors>(api.theme.get)
   const updateTheme = useMutation(api.theme.update)
   const resetTheme = useMutation(api.theme.reset)
   const [colors, setColors] = useState<Record<string, string>>(DEFAULT_THEME_COLORS)
@@ -42,7 +43,7 @@ export function CmsThemePanel({ onClose }: CmsThemePanelProps) {
     if (!window.confirm('Сбросить все цвета к стандартным?')) return
     setSaving(true)
     try {
-      await resetTheme()
+      await resetTheme({})
       setColors(DEFAULT_THEME_COLORS)
       for (const [key, cssVar] of Object.entries(THEME_COLOR_KEYS)) {
         document.documentElement.style.setProperty(

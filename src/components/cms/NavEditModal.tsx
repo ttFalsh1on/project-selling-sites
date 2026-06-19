@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useMutation } from 'convex/react'
-import type { Doc } from '../../../convex/_generated/dataModel'
-import { api } from '../../../convex/_generated/api'
+import { useMutation } from '../../hooks/useApi'
+import { api } from '../../api/paths'
+import type { NavItemDoc } from '../../types/api'
 
 interface NavEditModalProps {
-  item: Doc<'navItems'>
+  item: NavItemDoc
   onClose: () => void
 }
 

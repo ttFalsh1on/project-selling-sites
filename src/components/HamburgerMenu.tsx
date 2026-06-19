@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { useMutation, useQuery } from 'convex/react'
+import { useMutation, useQuery } from '../hooks/useApi'
 import { AnimatePresence, motion } from 'framer-motion'
-import type { Doc } from '../../convex/_generated/dataModel'
-import { api } from '../../convex/_generated/api'
+import type { NavItemDoc } from '../types/api'
+import { api } from '../api/paths'
 import { mainNavItems } from '../data/navigation'
 import { useCmsAwarePath } from '../hooks/useCmsAwarePath'
 import { CmsActionMenu } from './cms/CmsActionMenu'
@@ -17,7 +17,7 @@ function NavItemRow({
   index,
   onClose,
 }: {
-  item: Doc<'navItems'> | (typeof mainNavItems)[number]
+  item: NavItemDoc | (typeof mainNavItems)[number]
   index: number
   onClose: () => void
 }) {
@@ -119,7 +119,7 @@ export function HamburgerMenu() {
   const isCmsMode = useCmsMode()
   const [open, setOpen] = useState(false)
   const [showAddNav, setShowAddNav] = useState(false)
-  const navItems = useQuery(api.navItems.list)
+  const navItems = useQuery<NavItemDoc[]>(api.navItems.list)
   const items = navItems && navItems.length > 0 ? navItems : mainNavItems
 
   useEffect(() => {

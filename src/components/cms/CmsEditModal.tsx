@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { useMutation } from 'convex/react'
-import type { Id } from '../../../convex/_generated/dataModel'
-import { api } from '../../../convex/_generated/api'
+import { useMutation } from '../../hooks/useApi'
+import { api } from '../../api/paths'
 import type { CmsPage } from '../../data/cmsDefaults'
+import { fileToDataUrl } from '../../lib/mediaUpload'
 
 interface CmsEditModalProps {
   page: CmsPage
@@ -24,7 +24,6 @@ export function CmsEditModal({
   onClose,
 }: CmsEditModalProps) {
   const upsert = useMutation(api.cms.upsert)
-  const generateUploadUrl = useMutation(api.cms.generateUploadUrl)
   const [value, setValue] = useState(initialValue)
   const [href, setHref] = useState(initialHref)
   const [videoUrl, setVideoUrl] = useState(initialVideoUrl)
@@ -53,6 +52,7 @@ export function CmsEditModal({
             : type === 'video' && videoUrl.trim()
               ? { videoUrl: videoUrl.trim() }
               : undefined,
+        videoUrl: type === 'video' && videoUrl.trim() ? videoUrl.trim() : undefined,
       })
       onClose()
     } finally {
@@ -63,20 +63,13 @@ export function CmsEditModal({
   const handleImageUpload = async (file: File) => {
     setUploading(true)
     try {
-      const uploadUrl = await generateUploadUrl()
-      const result = await fetch(uploadUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': file.type },
-        body: file,
-      })
-      if (!result.ok) throw new Error('Upload failed')
-      const { storageId } = (await result.json()) as { storageId: string }
+      const imageUrl = await fileToDataUrl(file)
       await upsert({
         page,
         key: cmsKey,
         type: 'image',
         value: file.name,
-        imageStorageId: storageId as Id<'_storage'>,
+        imageUrl,
       })
       onClose()
     } finally {
@@ -87,20 +80,13 @@ export function CmsEditModal({
   const handleVideoUpload = async (file: File) => {
     setUploading(true)
     try {
-      const uploadUrl = await generateUploadUrl()
-      const result = await fetch(uploadUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': file.type },
-        body: file,
-      })
-      if (!result.ok) throw new Error('Upload failed')
-      const { storageId } = (await result.json()) as { storageId: string }
+      const videoUrlData = await fileToDataUrl(file)
       await upsert({
         page,
         key: cmsKey,
         type: 'video',
         value: file.name,
-        videoStorageId: storageId as Id<'_storage'>,
+        videoUrl: videoUrlData,
       })
       onClose()
     } finally {

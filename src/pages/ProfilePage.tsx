@@ -1,14 +1,14 @@
 import { useState } from 'react'
-import { useQuery } from 'convex/react'
-import { useMutation } from 'convex/react'
-import { useAuthActions } from '@convex-dev/auth/react'
-import { api } from '../../convex/_generated/api'
+import { useQuery, useMutation } from '../hooks/useApi'
+import { api } from '../api/paths'
+import { useFlexAuth } from '../providers/FlexAuthProvider'
 import { GlassCard } from '../components/GlassCard'
 import { LoadingState } from '../components/LoadingState'
 import { UserAvatar } from '../components/UserAvatar'
 import { AvatarUpload } from '../components/AvatarUpload'
 import { CreateAccountForm } from '../components/CreateAccountForm'
 import { SignInForm } from '../components/SignInForm'
+import type { ProfileMe } from '../types/api'
 
 const statusLabels = {
   done: { label: 'Готово', className: 'bg-cyber-green/15 text-cyber-green' },
@@ -17,9 +17,9 @@ const statusLabels = {
 } as const
 
 export function ProfilePage() {
-  const profileData = useQuery(api.profiles.getMe)
+  const profileData = useQuery<ProfileMe>(api.profiles.getMe)
   const updateName = useMutation(api.profiles.updateName)
-  const { signOut } = useAuthActions()
+  const { logout } = useFlexAuth()
   const [signingOut, setSigningOut] = useState(false)
 
   if (profileData === undefined) {
@@ -41,7 +41,7 @@ export function ProfilePage() {
   const handleSignOut = async () => {
     setSigningOut(true)
     try {
-      await signOut()
+      await logout()
     } finally {
       setSigningOut(false)
     }
@@ -129,16 +129,16 @@ export function ProfilePage() {
               </thead>
               <tbody className="text-white/70">
                 {orders.map((order) => {
-                  const status = statusLabels[order.status]
+                  const status = statusLabels[order.status as keyof typeof statusLabels]
                   return (
-                    <tr key={order._id} className="border-b border-white/5 last:border-0">
-                      <td className="py-3 pr-4 font-medium text-white">{order.project}</td>
+                    <tr key={order._id as string} className="border-b border-white/5 last:border-0">
+                      <td className="py-3 pr-4 font-medium text-white">{order.project as string}</td>
                       <td className="py-3 pr-4">
                         <span className={`rounded-full px-2 py-0.5 text-xs ${status.className}`}>
                           {status.label}
                         </span>
                       </td>
-                      <td className="py-3">{order.dueDate ?? '—'}</td>
+                      <td className="py-3">{(order.dueDate as string | undefined) ?? '—'}</td>
                     </tr>
                   )
                 })}

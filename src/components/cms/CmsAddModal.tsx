@@ -1,12 +1,9 @@
 import { useState } from 'react'
-import { useMutation } from 'convex/react'
-import type { Id } from '../../../convex/_generated/dataModel'
-import { api } from '../../../convex/_generated/api'
-import {
-  getCmsSlots,
-  type CmsSlotId,
-} from '../../data/cmsDefaults'
+import { useMutation } from '../../hooks/useApi'
+import { api } from '../../api/paths'
+import { getCmsSlots, type CmsSlotId } from '../../data/cmsDefaults'
 import { useCmsPageId } from '../../hooks/useCmsPageId'
+import { fileToDataUrl } from '../../lib/mediaUpload'
 
 interface CmsAddModalProps {
   onClose: () => void
@@ -17,7 +14,6 @@ type BlockType = 'text' | 'image' | 'video'
 export function CmsAddModal({ onClose }: CmsAddModalProps) {
   const page = useCmsPageId()
   const upsert = useMutation(api.cms.upsert)
-  const generateUploadUrl = useMutation(api.cms.generateUploadUrl)
 
   const [type, setType] = useState<BlockType>('text')
   const [slot, setSlot] = useState<CmsSlotId>('page-end')
@@ -28,18 +24,6 @@ export function CmsAddModal({ onClose }: CmsAddModalProps) {
   const [saving, setSaving] = useState(false)
 
   const slots = getCmsSlots(page)
-
-  const uploadFile = async (file: File) => {
-    const uploadUrl = await generateUploadUrl()
-    const result = await fetch(uploadUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': file.type },
-      body: file,
-    })
-    if (!result.ok) throw new Error('Upload failed')
-    const { storageId } = (await result.json()) as { storageId: string }
-    return storageId as Id<'_storage'>
-  }
 
   const handleCreate = async (file?: File) => {
     setSaving(true)
@@ -53,22 +37,22 @@ export function CmsAddModal({ onClose }: CmsAddModalProps) {
       } else if (type === 'image') {
         if (!file) return
         setUploading(true)
-        const storageId = await uploadFile(file)
+        const imageUrl = await fileToDataUrl(file)
         await upsert({
           ...base,
           type: 'image',
           value: file.name,
-          imageStorageId: storageId,
+          imageUrl,
         })
       } else if (type === 'video') {
         if (file) {
           setUploading(true)
-          const storageId = await uploadFile(file)
+          const videoUrlData = await fileToDataUrl(file)
           await upsert({
             ...base,
             type: 'video',
             value: file.name,
-            videoStorageId: storageId,
+            videoUrl: videoUrlData,
           })
         } else if (videoUrl.trim()) {
           await upsert({
@@ -76,6 +60,7 @@ export function CmsAddModal({ onClose }: CmsAddModalProps) {
             type: 'video',
             value: 'Видео',
             meta: { slot, align, videoUrl: videoUrl.trim() },
+            videoUrl: videoUrl.trim(),
           })
         } else {
           return

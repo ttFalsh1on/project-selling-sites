@@ -1,5 +1,6 @@
-import { useQuery } from 'convex/react'
-import { api } from '../../convex/_generated/api'
+import { useQuery } from '../hooks/useApi'
+import { api } from '../api/paths'
+import type { ServiceDoc } from '../types/api'
 import { CmsSlot, useCustomBlocks } from '../components/cms/CmsSlot'
 import { EditableBlock } from '../components/cms/EditableBlock'
 import { EditableServiceCard } from '../components/cms/EditableServiceCard'
@@ -7,11 +8,15 @@ import { LoadingState } from '../components/LoadingState'
 import { useCmsPage } from '../hooks/useCmsPage'
 
 export function ServicesPage() {
-  const services = useQuery(api.services.list)
+  const services = useQuery<ServiceDoc[]>(api.services.list)
   const cms = useCmsPage('services')
   const customBlocks = useCustomBlocks(cms.blocks)
 
   if (services === undefined || cms.isLoading) {
+    return <LoadingState />
+  }
+
+  if (!services) {
     return <LoadingState />
   }
 

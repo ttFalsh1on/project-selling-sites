@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useMutation } from 'convex/react'
+import { useMutation } from '../../hooks/useApi'
 import { useNavigate } from 'react-router-dom'
-import { api } from '../../../convex/_generated/api'
+import { api } from '../../api/paths'
 import { slugify } from '../../lib/pageSlug'
 import { useCmsAwarePath } from '../../hooks/useCmsAwarePath'
 
@@ -34,7 +34,7 @@ export function NavAddModal({ onClose, onCreated }: NavAddModalProps) {
         label: label.trim(),
         icon: icon.trim() || '📄',
         slug: slug.trim() || undefined,
-      })
+      }) as { path: string }
       onCreated?.()
       onClose()
       navigate(cmsPath(result.path))

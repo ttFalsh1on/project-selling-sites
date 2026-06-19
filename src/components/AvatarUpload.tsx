@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
-import { useMutation } from 'convex/react'
-import type { Id } from '../../convex/_generated/dataModel'
-import { api } from '../../convex/_generated/api'
+import { useMutation } from '../hooks/useApi'
+import { api } from '../api/paths'
+import { fileToDataUrl } from '../lib/mediaUpload'
 
 interface AvatarUploadProps {
   onUploaded?: () => void
@@ -9,7 +9,6 @@ interface AvatarUploadProps {
 
 export function AvatarUpload({ onUploaded }: AvatarUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
-  const generateUploadUrl = useMutation(api.profiles.generateUploadUrl)
   const saveAvatar = useMutation(api.profiles.saveAvatar)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -23,29 +22,15 @@ export function AvatarUpload({ onUploaded }: AvatarUploadProps) {
       return
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Файл слишком большой. Максимум 5 МБ.')
-      return
-    }
-
     setUploading(true)
     setError(null)
 
     try {
-      const uploadUrl = await generateUploadUrl()
-      const result = await fetch(uploadUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': file.type },
-        body: file,
-      })
-
-      if (!result.ok) throw new Error('Не удалось загрузить файл')
-
-      const { storageId } = (await result.json()) as { storageId: string }
-      await saveAvatar({ storageId: storageId as Id<'_storage'> })
+      const avatarUrl = await fileToDataUrl(file)
+      await saveAvatar({ avatarUrl })
       onUploaded?.()
-    } catch {
-      setError('Ошибка загрузки. Попробуйте ещё раз.')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Ошибка загрузки. Попробуйте ещё раз.')
     } finally {
       setUploading(false)
       if (inputRef.current) inputRef.current.value = ''

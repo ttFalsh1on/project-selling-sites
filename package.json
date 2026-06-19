@@ -5,14 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:all": "convex dev --start \"vite\"",
-    "dev:backend": "convex dev",
-    "seed": "convex run seed:seedIfEmpty",
-    "seed:cms": "convex run seed:seedCmsIfEmpty",
-    "seed:nav": "convex run seed:seedNavIfEmpty",
-    "seed:prod": "convex run seed:seedIfEmpty --prod",
-    "seed:cms:prod": "convex run seed:seedCmsIfEmpty --prod",
-    "deploy:backend": "convex deploy",
+    "dev:all": "npm run dev:backend & npm run dev",
+    "dev:backend": "npm run start --prefix \"E:/бэкенд/examples/siteforge\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -21,9 +15,8 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@auth/core": "^0.37.4",
-    "@convex-dev/auth": "^0.0.92",
-    "convex": "^1.39.1",
+    "@flex/client": "file:E:/бэкенд/packages/flex-client",
+    "@flex/react": "file:E:/бэкенд/packages/flex-react",
     "framer-motion": "^12.40.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
@@ -40,7 +33,6 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
-    "jose": "^6.2.3",
     "tailwindcss": "^4.3.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
