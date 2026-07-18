@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useFlexApi, useFlexMutation } from '@flex/react'
+import { useFlexApi, useFlexMutation } from '../lib/flexClient'
 
 const POLL_INTERVAL_MS = 2500
 

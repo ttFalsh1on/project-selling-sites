@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { FlexProvider } from '@flex/react'
+import { FlexProvider } from '../lib/flexClient'
 import { api } from '../api/paths'
 import { FLEX_TOKEN_KEY, flexUrl } from '../lib/flex'
 
@@ -140,8 +140,7 @@ export function FlexAuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <FlexAuthContext.Provider value={value}>
-      <FlexProvider url={flexUrl} token={token} httpOnly key={token}>
-        {/* @ts-expect-error duplicate @types/react between app and flex-react */}
+      <FlexProvider url={flexUrl} token={token} key={token}>
         {children}
       </FlexProvider>
     </FlexAuthContext.Provider>
