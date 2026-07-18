@@ -140,7 +140,7 @@ export function FlexAuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <FlexAuthContext.Provider value={value}>
-      <FlexProvider url={flexUrl} token={token} key={token}>
+      <FlexProvider url={flexUrl} token={token} httpOnly key={token}>
         {/* @ts-expect-error duplicate @types/react between app and flex-react */}
         {children}
       </FlexProvider>

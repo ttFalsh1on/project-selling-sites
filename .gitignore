@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+.vercel
 scripts/keys.txt
 scripts/.env.auth
 
@@ -24,3 +25,5 @@ scripts/.env.auth
 *.njsproj
 *.sln
 *.sw?
+
+.vercel

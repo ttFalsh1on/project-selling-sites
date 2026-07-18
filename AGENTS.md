@@ -1,13 +1,25 @@
-<!-- convex-ai-start -->
+# Проект
 
-This project uses [Convex](https://convex.dev) as its backend.
+Frontend: React + TypeScript + Vite. Бэкенд — **Flex** (SiteForge), локальный проект
+на этом же компьютере: `E:/бэкенд/examples/siteforge`.
 
-When working on Convex code, **always read
-`convex/_generated/ai/guidelines.md` first** for important guidelines on
-how to correctly use Convex APIs and patterns. The file contains rules that
-override what you may have learned about Convex from training data.
+## Подключение к бэкенду
 
-Convex agent skills for common tasks can be installed by running
-`npx convex ai-files install`.
+- Фронтенд общается с Flex через пакеты `@flex/client` и `@flex/react`
+  (см. `src/hooks/useApi.ts`, `src/providers/FlexAuthProvider.tsx`).
+- URL бэкенда берётся из переменной окружения `VITE_FLEX_URL`
+  (локально `http://localhost:3210`, см. `.env.local` / `.env.example`).
+- Список серверных функций (пути `module:function`) — в `src/api/paths.ts`.
 
-<!-- convex-ai-end -->
+## Запуск
+
+```bash
+# 1. Локальный Flex-бэкенд (порт 3210)
+npm run dev:backend
+
+# 2. Фронтенд
+npm run dev
+```
+
+Реализация серверных функций (auth, profiles, services, reviews, cms, theme,
+navItems, admins, seed) находится в `E:/бэкенд/examples/siteforge/src/functions`.
