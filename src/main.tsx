@@ -4,7 +4,6 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { CmsProvider } from './components/cms/CmsProvider'
 import { ThemeProvider } from './components/cms/ThemeProvider'
-import { GuestAuthBootstrap } from './components/GuestAuthBootstrap'
 import { FlexAuthProvider } from './providers/FlexAuthProvider'
 import './index.css'
 
@@ -14,7 +13,6 @@ createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <ThemeProvider>
           <CmsProvider>
-            <GuestAuthBootstrap />
             <App />
           </CmsProvider>
         </ThemeProvider>

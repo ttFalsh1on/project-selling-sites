@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:all": "npm run dev:backend & npm run dev",
-    "dev:backend": "npm run start --prefix \"E:/бэкенд/examples/siteforge\"",
+    "dev:backend": "npm run dev:siteforge --prefix \"E:/FanatickTeam/Flex/Flex clone repo/Flex\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -15,8 +15,8 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@flex/client": "file:E:/бэкенд/packages/flex-client",
-    "@flex/react": "file:E:/бэкенд/packages/flex-react",
+    "@flex/client": "file:E:/FanatickTeam/Flex/Flex clone repo/Flex/packages/flex-client",
+    "@flex/react": "file:E:/FanatickTeam/Flex/Flex clone repo/Flex/packages/flex-react",
     "framer-motion": "^12.40.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",

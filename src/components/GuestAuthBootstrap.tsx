@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react'
-import { useConvexAuth } from '../providers/FlexAuthProvider'
+import { useFlexAuth } from '../providers/FlexAuthProvider'
 import { useMutation } from '../hooks/useApi'
 import { api } from '../api/paths'
 
 export function GuestAuthBootstrap() {
-  const { isAuthenticated, isLoading } = useConvexAuth()
+  const { isAuthenticated, isLoading } = useFlexAuth()
   const ensureProfile = useMutation(api.profiles.ensureProfile)
   const started = useRef(false)
 

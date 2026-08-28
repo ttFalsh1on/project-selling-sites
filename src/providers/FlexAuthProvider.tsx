@@ -9,7 +9,7 @@ import {
 } from 'react'
 import { FlexProvider } from '@flex/react'
 import { api } from '../api/paths'
-import { FLEX_TOKEN_KEY, flexUrl } from '../lib/flex'
+import { FLEX_TOKEN_KEY, flexProjectId, flexUrl } from '../lib/flex'
 
 interface FlexAuthContextValue {
   token: string | null
@@ -27,6 +27,7 @@ const FlexAuthContext = createContext<FlexAuthContextValue | null>(null)
 async function runMutation<T>(path: string, args: Record<string, unknown>, token?: string): Promise<T> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' }
   if (token) headers.Authorization = `Bearer ${token}`
+  headers['X-Project-Id'] = flexProjectId
 
   const res = await fetch(`${flexUrl}/api/run`, {
     method: 'POST',
@@ -46,7 +47,7 @@ export function FlexAuthProvider({ children }: { children: ReactNode }) {
       return null
     }
   })
-  const [isLoading, setIsLoading] = useState(!token)
+  const [isLoading, setIsLoading] = useState(!!token)
 
   const setToken = useCallback((next: string | null) => {
     try {
@@ -59,16 +60,18 @@ export function FlexAuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (token) {
+    if (!token) {
       setIsLoading(false)
       return
     }
 
     let cancelled = false
+    setIsLoading(true)
     void (async () => {
       try {
-        const result = await runMutation<{ token: string }>(api.auth.guestLogin, {})
-        if (!cancelled) setToken(result.token)
+        await runMutation(api.auth.me, {}, token)
+      } catch {
+        if (!cancelled) setToken(null)
       } finally {
         if (!cancelled) setIsLoading(false)
       }
@@ -97,10 +100,14 @@ export function FlexAuthProvider({ children }: { children: ReactNode }) {
 
   const upgradeGuest = useCallback(
     async (name: string, email: string, password: string) => {
-      if (!token) throw new Error('Не авторизован')
-      await runMutation(api.auth.upgradeGuest, { name, email, password }, token)
+      const result = await runMutation<{ token: string }>(api.auth.register, {
+        name,
+        email,
+        password,
+      })
+      setToken(result.token)
     },
-    [token],
+    [setToken],
   )
 
   const logout = useCallback(async () => {
@@ -112,8 +119,6 @@ export function FlexAuthProvider({ children }: { children: ReactNode }) {
       }
     }
     setToken(null)
-    const result = await runMutation<{ token: string }>(api.auth.guestLogin, {})
-    setToken(result.token)
   }, [token, setToken])
 
   const value = useMemo(
@@ -130,7 +135,7 @@ export function FlexAuthProvider({ children }: { children: ReactNode }) {
     [token, isLoading, setToken, login, register, upgradeGuest, logout],
   )
 
-  if (isLoading || !token) {
+  if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] text-white/60">
         Подключение...
@@ -140,7 +145,12 @@ export function FlexAuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <FlexAuthContext.Provider value={value}>
-      <FlexProvider url={flexUrl} token={token} key={token}>
+      <FlexProvider
+        url={flexUrl}
+        token={token ?? undefined}
+        projectId={flexProjectId}
+        key={`${flexProjectId}:${token ?? 'public'}`}
+      >
         {/* @ts-expect-error duplicate @types/react between app and flex-react */}
         {children}
       </FlexProvider>
@@ -152,30 +162,4 @@ export function useFlexAuth() {
   const ctx = useContext(FlexAuthContext)
   if (!ctx) throw new Error('useFlexAuth: оберните приложение в FlexAuthProvider')
   return ctx
-}
-
-/** Совместимость с @convex-dev/auth/react */
-export function useAuthActions() {
-  const { login, logout, register } = useFlexAuth()
-  return {
-    signIn: async (
-      provider: 'password' | 'anonymous',
-      params?: { flow?: string; email?: string; password?: string; name?: string },
-    ) => {
-      if (provider === 'anonymous') return
-      if (params?.flow === 'signUp' && params.email && params.password && params.name) {
-        await register(params.name, params.email, params.password)
-        return
-      }
-      if (params?.email && params.password) {
-        await login(params.email, params.password)
-      }
-    },
-    signOut: logout,
-  }
-}
-
-export function useConvexAuth() {
-  const { isAuthenticated, isLoading } = useFlexAuth()
-  return { isAuthenticated, isLoading }
 }

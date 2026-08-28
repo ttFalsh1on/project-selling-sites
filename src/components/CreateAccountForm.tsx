@@ -1,12 +1,9 @@
 import { useState } from 'react'
-import { useMutation } from '../hooks/useApi'
-import { api } from '../api/paths'
 import { useFlexAuth } from '../providers/FlexAuthProvider'
 import { GlassCard } from './GlassCard'
 
 export function CreateAccountForm() {
   const { upgradeGuest } = useFlexAuth()
-  const ensureProfile = useMutation(api.profiles.ensureProfile)
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -21,7 +18,6 @@ export function CreateAccountForm() {
 
     try {
       await upgradeGuest(name.trim(), email.trim(), password)
-      await ensureProfile({})
     } catch {
       setError('Не удалось создать аккаунт. Проверьте email и пароль (мин. 8 символов).')
     } finally {

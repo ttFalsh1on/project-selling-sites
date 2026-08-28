@@ -1,12 +1,9 @@
 import { useState } from 'react'
-import { useMutation } from '../hooks/useApi'
-import { api } from '../api/paths'
 import { useFlexAuth } from '../providers/FlexAuthProvider'
 import { GlassCard } from './GlassCard'
 
 export function SignInForm() {
   const { login } = useFlexAuth()
-  const ensureProfile = useMutation(api.profiles.ensureProfile)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -19,7 +16,6 @@ export function SignInForm() {
 
     try {
       await login(email.trim(), password)
-      await ensureProfile({})
     } catch {
       setError('Неверный email или пароль.')
     } finally {

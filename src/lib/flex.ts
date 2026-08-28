@@ -1,9 +1,13 @@
-export const flexUrl = import.meta.env.VITE_FLEX_URL as string | undefined
+const configuredFlexUrl = import.meta.env.VITE_FLEX_URL as string | undefined
+const configuredProjectId = import.meta.env.VITE_FLEX_PROJECT_ID as string | undefined
 
-if (!flexUrl) {
+if (!configuredFlexUrl || !configuredProjectId) {
   throw new Error(
-    'VITE_FLEX_URL не задан. Добавьте переменную в Vercel или в .env.local (например http://localhost:3210).',
+    'Задайте VITE_FLEX_URL и VITE_FLEX_PROJECT_ID в .env.local.',
   )
 }
+
+export const flexUrl: string = configuredFlexUrl
+export const flexProjectId: string = configuredProjectId
 
 export const FLEX_TOKEN_KEY = 'siteforge_flex_token'
