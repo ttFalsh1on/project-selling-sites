@@ -145,7 +145,9 @@ export function ReviewForm({ onClose }: ReviewFormProps) {
         )}
 
         <label className="block">
-          <span className="mb-2 block text-sm font-semibold text-white/70">Ваш отзыв</span>
+          <span className="mb-2 block text-sm font-semibold text-white/70">
+            Ваш отзыв <span className="font-normal text-white/40">(не менее 20 символов)</span>
+          </span>
           <textarea
             value={text}
             onChange={(event) => setText(event.target.value)}
