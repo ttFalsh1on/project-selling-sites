@@ -15,8 +15,6 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@flex/client": "file:E:/FanatickTeam/Flex/Flex clone repo/Flex/packages/flex-client",
-    "@flex/react": "file:E:/FanatickTeam/Flex/Flex clone repo/Flex/packages/flex-react",
     "framer-motion": "^12.40.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
