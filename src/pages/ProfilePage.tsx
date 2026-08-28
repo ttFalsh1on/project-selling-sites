@@ -27,7 +27,20 @@ export function ProfilePage() {
   }
 
   if (profileData === null) {
-    return <LoadingState label="Вход как гость..." />
+    return (
+      <div className="space-y-5 sm:space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white sm:text-3xl">Профиль</h1>
+          <p className="mt-2 text-sm text-white/55 sm:text-base">
+            Войдите в аккаунт или создайте новый, чтобы управлять профилем и оставлять отзывы.
+          </p>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <CreateAccountForm />
+          <SignInForm />
+        </div>
+      </div>
+    )
   }
 
   const { profile, orders, stats, avatarUrl, isGuest } = profileData

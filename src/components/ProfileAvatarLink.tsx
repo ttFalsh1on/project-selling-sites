@@ -10,8 +10,8 @@ import { UserAvatar } from './UserAvatar'
 export function ProfileAvatarLink() {
   const profileData = useQuery<ProfileMe | null>(api.profiles.getMe)
   const cmsPath = useCmsAwarePath()
-  const name = profileData?.profile.name ?? 'Гость'
-  const isGuest = profileData?.isGuest ?? true
+  const name = profileData?.profile.name ?? 'Профиль'
+  const isGuest = profileData?.isGuest ?? false
 
   return (
     <NavLink
@@ -34,7 +34,7 @@ export function ProfileAvatarLink() {
             size="sm"
             className="shadow-none"
           />
-          {isActive && (
+          {isActive && profileData && (
             <motion.span
               layoutId="profile-active-ring"
               className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-[#0a0a0a] ${
