@@ -24,6 +24,7 @@ export const api = {
     list: 'reviews:list',
     averageRating: 'reviews:averageRating',
     create: 'reviews:create',
+    submit: 'reviews:submit',
     update: 'reviews:update',
     remove: 'reviews:remove',
   },
