@@ -18,8 +18,12 @@ export function CreateAccountForm() {
 
     try {
       await upgradeGuest(name.trim(), email.trim(), password)
-    } catch {
-      setError('Не удалось создать аккаунт. Проверьте email и пароль (мин. 6 символов).')
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : 'Не удалось создать аккаунт. Попробуйте ещё раз.',
+      )
     } finally {
       setLoading(false)
     }
