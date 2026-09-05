@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { AnimatePresence } from 'framer-motion'
 import { useMutation } from '../../hooks/useApi'
 import { api } from '../../api/paths'
 import type { ServiceDoc } from '../../types/api'
 import { GlassCard } from '../GlassCard'
 import { EditableEntityWrapper } from './EditableEntityWrapper'
 import { ServiceEditModal } from './ServiceEditModal'
+import { OrderModal } from './OrderModal'
 
 interface EditableServiceCardProps {
   service: ServiceDoc
@@ -15,6 +17,7 @@ interface EditableServiceCardProps {
 export function EditableServiceCard({ service, delay = 0, compact = false }: EditableServiceCardProps) {
   const remove = useMutation(api.services.remove)
   const [editing, setEditing] = useState(false)
+  const [ordering, setOrdering] = useState(false)
 
   const handleDelete = async () => {
     if (window.confirm(`Удалить услугу «${service.title}»?`)) {
@@ -61,7 +64,11 @@ export function EditableServiceCard({ service, delay = 0, compact = false }: Edi
       </ul>
       <div className="mt-5 flex flex-col gap-3 border-t border-white/10 pt-4 sm:mt-6 sm:flex-row sm:items-center sm:justify-between">
         <span className="text-lg font-bold text-accent-teal sm:text-xl">{service.price}</span>
-        <button type="button" className="btn-primary w-full text-sm sm:w-auto">
+        <button
+          type="button"
+          onClick={() => setOrdering(true)}
+          className="btn-primary w-full text-sm sm:w-auto"
+        >
           Заказать
         </button>
       </div>
@@ -74,6 +81,9 @@ export function EditableServiceCard({ service, delay = 0, compact = false }: Edi
         {card}
       </EditableEntityWrapper>
       {editing && <ServiceEditModal service={service} onClose={() => setEditing(false)} />}
+      <AnimatePresence>
+        {ordering && <OrderModal service={service} onClose={() => setOrdering(false)} />}
+      </AnimatePresence>
     </>
   )
 }

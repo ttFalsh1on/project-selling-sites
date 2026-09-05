@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AnimatePresence } from 'framer-motion'
 import { useQuery, useMutation } from '../hooks/useApi'
 import { api } from '../api/paths'
 import { useFlexAuth } from '../providers/FlexAuthProvider'
@@ -8,6 +9,7 @@ import { UserAvatar } from '../components/UserAvatar'
 import { AvatarUpload } from '../components/AvatarUpload'
 import { CreateAccountForm } from '../components/CreateAccountForm'
 import { SignInForm } from '../components/SignInForm'
+import { OrderModal } from '../components/cms/OrderModal'
 import type { ProfileMe } from '../types/api'
 
 const statusLabels = {
@@ -21,6 +23,7 @@ export function ProfilePage() {
   const updateName = useMutation(api.profiles.updateName)
   const { logout } = useFlexAuth()
   const [signingOut, setSigningOut] = useState(false)
+  const [support, setSupport] = useState(false)
 
   if (profileData === undefined) {
     return <LoadingState label="Загрузка профиля..." />
@@ -173,10 +176,14 @@ export function ProfilePage() {
         <p className="mb-4 text-sm text-white/55">
           Нужна консультация по новому проекту? Напишите нам — ответим в течение часа.
         </p>
-        <button type="button" className="btn-primary w-full sm:w-auto">
+        <button type="button" onClick={() => setSupport(true)} className="btn-primary w-full sm:w-auto">
           Написать в поддержку
         </button>
       </GlassCard>
+
+      <AnimatePresence>
+        {support && <OrderModal onClose={() => setSupport(false)} />}
+      </AnimatePresence>
     </div>
   )
 }
